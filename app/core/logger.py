@@ -3,6 +3,7 @@ import logging
 from loguru import logger as _log
 
 LOG_ROTATION = "1 day"
+TIME = "{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}"
 
 
 def setup_logger(with_debug: bool = False) -> None:
@@ -34,7 +35,7 @@ def setup_logger(with_debug: bool = False) -> None:
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "system",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}",
+        format=TIME,
     )
 
     # Communication logs (communication)
@@ -44,7 +45,7 @@ def setup_logger(with_debug: bool = False) -> None:
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "comm",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}",
+        format=TIME,
     )
 
     # Background Job logs (communication)
@@ -54,7 +55,7 @@ def setup_logger(with_debug: bool = False) -> None:
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "job",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}",
+        format=TIME,
     )
 
     # Background Job logs (communication)
@@ -64,7 +65,7 @@ def setup_logger(with_debug: bool = False) -> None:
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "external",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}",
+        format=TIME,
     )
 
 
