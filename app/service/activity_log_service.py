@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.activity_log import ActivityAction, ActivityLog
 
 
-async def log_activity(
+def log_activity(
         db: AsyncSession,
         user_email: str,
         action: ActivityAction,
@@ -15,6 +15,6 @@ async def log_activity(
         user_email=user_email,
         action=action,
         details=details,
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(UTC)
     )
     db.add(log_entry)

@@ -74,7 +74,7 @@ async def login(db: AsyncSession, email: str, password: str) -> TokenResponse:
     refresh_token = create_refresh_token({"sub": user.email})
     is_admin = user.is_admin
     user.auth_token = refresh_token
-    await log_activity(db, user.email, ActivityAction.LOGIN)
+    log_activity(db, user.email, ActivityAction.LOGIN)
 
     await db.commit()
     return TokenResponse(
