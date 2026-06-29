@@ -38,6 +38,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - ./tests:/app/tests
 
   frontend:
     build: C:\Users\ACER\Downloads\auth-ui
