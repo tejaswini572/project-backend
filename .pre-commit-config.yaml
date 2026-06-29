@@ -1,0 +1,36 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.7
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        files: ^(app|tests)/
+        additional_dependencies:
+          - fastapi
+          - sqlalchemy
+          - pydantic
+          - pydantic-settings
+          - PyJWT
+          - pwdlib
+          - redis
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.4
+    hooks:
+      - id: bandit
+        args: ["-r", "app/"]
+        files: ^app/
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: docker exec backend pytest tests/ --tb=short -q
+        language: system
+        pass_filenames: false
+        always_run: true
