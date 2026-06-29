@@ -21,7 +21,7 @@ async def get_all_users(db: Annotated[AsyncSession, Depends(get_db)]) -> JSONRes
     )
 
 
-@router.get("/{customer_id}")
+@router.get("/{customer_id}", responses={404: {"description": "User not found"}})
 async def get_user_by_id(customer_id: int, db: Annotated[AsyncSession, Depends(get_db)]) -> JSONResponse:
     result = await user_service.get_user_by_id(db, customer_id)
     if result is None:

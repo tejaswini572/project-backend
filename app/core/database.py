@@ -16,6 +16,7 @@ from sqlalchemy.orm import declarative_base
 
 # Define the base for declarative models
 Base = declarative_base()
+DB_NOT_INITIALIZED = "DatabaseSessionManager is not initialized"
 
 
 class DBSettings(BaseSettings):
@@ -73,8 +74,9 @@ class DatabaseSessionManager:
 
     async def close(self) -> None:
         if self.engine is None:
-            msg = "DatabaseSessionManager is not initialized"
-            raise Exception(msg)
+
+            raise RuntimeError(DB_NOT_INITIALIZED)
+
         await self.engine.dispose()
 
         self.engine = None
@@ -84,8 +86,8 @@ class DatabaseSessionManager:
     @contextlib.asynccontextmanager
     async def connect(self) -> AsyncIterator[AsyncConnection]:
         if self.engine is None:
-            msg = "DatabaseSessionManager is not initialized"
-            raise Exception(msg)
+
+            raise RuntimeError(DB_NOT_INITIALIZED)  # ← specific exception + constant
 
         async with self.engine.begin() as connection:
             try:
@@ -101,8 +103,8 @@ class DatabaseSessionManager:
     @contextlib.asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
         if self._sessionmaker is None:
-            msg = "DatabaseSessionManager is not initialized"
-            raise Exception(msg)
+
+            raise RuntimeError(DB_NOT_INITIALIZED)  # ← specific exception + constant
 
         session = self._sessionmaker()
         try:

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 import jwt
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,7 +22,7 @@ router = APIRouter(prefix="/api/auth", tags=["Auth"])
 @router.post("/register")
 async def register_user(
     data: UserRegister,
-    db: AsyncSession = Depends(get_db),
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict[str, str]:
     return await register(db, data.email, data.password)
 
@@ -29,7 +31,7 @@ async def register_user(
 async def login_user(
     response: Response,
     data: UserLogin,
-    db: AsyncSession = Depends(get_db),
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict[str, str | bool]:
     result = await login(db, data.email, data.password)
     response.set_cookie(
@@ -45,7 +47,7 @@ async def login_user(
 @router.post("/forgot-password")
 async def forgot_password_user(
     data: ForgotPasswordRequest,
-    db: AsyncSession = Depends(get_db),
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict[str, str]:
     return await forgot_password(db, data.email)
 
@@ -53,14 +55,16 @@ async def forgot_password_user(
 @router.post("/change-password")
 async def change_password_user(
     data: ChangePasswordRequest,
-    db: AsyncSession = Depends(get_db),
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict[str, str]:
     return await change_password(db, data.old_password, data.new_password, data.email)
 
 
-@router.post("/refresh-token")
+@router.post("/refresh-token",
+             responses={401: {"description": "No refresh token found or invalid token"}},
+)
 async def refresh_token_user(
-    refresh_token: str = Cookie(None)
+    refresh_token: Annotated[str | None, Cookie()] = None,
 ) -> dict[str, str]:
     if not refresh_token:
         raise HTTPException(status_code=401, detail="No refresh token is found")

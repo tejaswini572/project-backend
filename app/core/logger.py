@@ -2,6 +2,8 @@ import logging
 
 from loguru import logger as _log
 
+LOG_ROTATION = "1 day"
+
 
 def setup_logger(with_debug: bool = False) -> None:
     log_path = "data/logs"
@@ -9,7 +11,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # App Info Log
     _log.add(
         f"{log_path}/app.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         filter=lambda record: record["extra"].get("context") not in {"system", "comm", "trade"},
         level="INFO",
@@ -18,7 +20,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # App Error logs
     _log.add(
         f"{log_path}/error.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         filter=lambda record: record["extra"].get("context") not in {"system", "comm", "trade"}
         and record["level"].name in {"ERROR", "CRITICAL"},
@@ -28,7 +30,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # System logs (system)
     _log.add(
         f"{log_path}/system.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "system",
@@ -38,7 +40,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # Communication logs (communication)
     _log.add(
         f"{log_path}/comm.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "comm",
@@ -48,7 +50,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # Background Job logs (communication)
     _log.add(
         f"{log_path}/job.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "job",
@@ -58,7 +60,7 @@ def setup_logger(with_debug: bool = False) -> None:
     # Background Job logs (communication)
     _log.add(
         f"{log_path}/external.log",
-        rotation="1 day",
+        rotation=LOG_ROTATION,
         compression="zip",
         level="DEBUG" if with_debug else "INFO",
         filter=lambda record: record["extra"].get("context") == "external",
