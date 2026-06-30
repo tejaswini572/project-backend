@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +14,6 @@ def log_activity(
         user_email=user_email,
         action=action,
         details=details,
-        timestamp=datetime.now(UTC)
+
     )
     db.add(log_entry)

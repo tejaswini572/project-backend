@@ -28,7 +28,7 @@ async def add_product(db: AsyncSession, product: ProductCreate, user_email: str)
         stock_quantity=product.stock_quantity,
     )
     db.add(new_product)
-    await log_activity(db, user_email, ActivityAction.ADD_PRODUCT)
+    log_activity(db, user_email, ActivityAction.ADD_PRODUCT)
     await db.commit()
     await db.refresh(new_product)
 
@@ -51,7 +51,7 @@ async def update_product(
     existing.category = product.category
     existing.price = product.price
     existing.stock_quantity = product.stock_quantity
-    await log_activity(db, user_email, ActivityAction.UPDATE_PRODUCT)
+    log_activity(db, user_email, ActivityAction.UPDATE_PRODUCT)
     await db.commit()
     await db.refresh(existing)
 
@@ -63,7 +63,7 @@ async def delete_product(db: AsyncSession, product_id: int, user_email: str) -> 
     existing = result.scalars().first()
     if not existing:
         raise HTTPException(status_code=404, detail="Product not found")
-    await log_activity(db, user_email, ActivityAction.DELETE_PRODUCT)
+    log_activity(db, user_email, ActivityAction.DELETE_PRODUCT)
     await db.delete(existing)
     await db.commit()
 

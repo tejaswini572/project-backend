@@ -20,4 +20,6 @@ class ActivityLog(Base):
     user_email: Mapped[str]
     action: Mapped[str]
     details: Mapped[str | None] = mapped_column(nullable=True)
-    timestamp: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+    timestamp: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(UTC).replace(tzinfo=None)
+    )
